@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>express-1904-chat</title>
+  <link rel="stylesheet" href="https://cdn.bootcss.com/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+</head>
+
+<body>
+
+  <%- include('./commons/navbar') %>
+
+  <div class="container my-5">
+    <h1>聊天室</h1>
+
+    <div class="row">
+      <div class="col-md-6 mx-auto">
+        <div id="messages" class="mb-4"
+          style="height: 300px; overflow-y: auto; border: 1px solid #000;border-radius: 5px; padding: 10px;">
+
+          <!-- <div class="my-4 d-flex">
+            <div class="mr-2">
+              <small class="text-black-50">张三：</small>
+            </div>
+            <div>
+              hello
+            </div>
+          </div> -->
+
+          <!-- <div class="my-4 d-flex justify-content-end">
+            <div>
+              hello
+            </div>
+          </div> -->
+
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 mx-auto d-flex">
+        <input id="value" type="text" class="form-control mr-2">
+        <button id="btn" class="btn btn-primary">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.4.1/js/bootstrap.min.js"></script>
+  <!-- 引入 socketio 的客户端js文件 -->
+  <script src="/assets/lib/socket.io.js"></script>
+  <script>
+
+    $(function () {
+
+      // 建立socketio的连接
+      const socket = io()
+
+      // 触发 setName 这个事件
+      // 不能写死名字，需要如何获取到当前登录的用户的username呢
+      // 从session中拿出来，但是前端是直接获取不了session
+      // 在渲染这个页面时，可以通过模板变量将用户名给带到页面来
+      socket.emit('setName', '<%= username %>')
+
+      // 监听 message 这个服务端触发的事件
+      socket.on('message', (data) => {
+        // data  { username: xxx, message: yyy }
+
+        // 直接追加元素到messages的元素中
+        // 判断是自己的消息还是别人发来的消息
+        if (data.username === '<%= username %>') {
+          // 自己
+          $('#messages').append(`
+            <div class="my-4 d-flex justify-content-end">
+              <div>
+                ${data.message}
+              </div>
+            </div>
+          `)
+
+        } else {
+          // 其它
+          $('#messages').append(`
+            <div class="my-4 d-flex">
+              <div class="mr-2">
+                <small class="text-black-50">${data.username}：</small>
+              </div>
+              <div>
+                ${data.message}
+              </div>
+            </div>
+          `)
+
+        }
+
+        // 让 messages 元素的滚动条一直处于最底部
+        $('#messages').stop().animate({
+          scrollTop: $('#messages').height() + $('#messages').scrollTop()
+        }, 'slow')
+      })
+
+      // 监听 btn 按钮的点击事件，发消息
+      $('#btn').click(function () {
+        // 获取value
+        var value = $('#value').val()
+        // 判断
+        if (!value) return
+        // 触发服务器的 message 事件
+        socket.emit('message', {
+          message: value
+        })
+      })
+
+    })
+
+
+
+
+
+  </script>
+</body>
+
+</html>

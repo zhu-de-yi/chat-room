@@ -1,0 +1,23 @@
+{
+  "name": "express-1904-chat",
+  "version": "1.0.0",
+  "description": "使用 express + mongoose + socket.io + ejs 实现前后端不分离的小项目",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^8.2.0",
+    "ejs": "^3.0.2",
+    "express": "^4.17.1",
+    "express-async-errors": "^3.1.1",
+    "express-session": "^1.17.0",
+    "mongoose": "^5.9.7",
+    "socket.io": "^2.3.0"
+  }
+}
